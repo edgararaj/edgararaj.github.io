@@ -1,15 +1,12 @@
+"use client";
 import ReactMarkdown from "react-markdown";
 import styles from "./page.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import projects from "../../../assets/project_repos.json";
-import { GitBranchPlusIcon } from 'lucide-react'
-import { processReadme } from '../../../lib/processReadme';
-import path from "path";
-
-export async function generateStaticParams() {
-  return Object.keys(projects).map((slug) => ({slug}));
-}
+import { GitBranchPlusIcon } from "lucide-react";
+import { useProjects } from "../../providers/projects";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 const MarkdownComponents: object = {
   p: (paragraph: { children?: boolean; node?: any }) => {
@@ -36,22 +33,30 @@ const MarkdownComponents: object = {
   },
 };
 
-export default async function ProjectPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+function ProjectMarkdown() {
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug");
+  const { projects, isLoading } = useProjects();
+  const [project, setProject] = useState(null);
 
-  const {user, repo} = projects[slug];
-  const repoUrl = `https://github.com/${user}/${repo}`
-  const publicDirectory = path.join(process.cwd(), 'public');
-  const markdownContent = await processReadme(user, repo, publicDirectory);
-  
+  useEffect(() => {
+    if (!isLoading) {
+      setProject(projects.find((project) => project.slug === slug));
+    }
+  }, [projects, isLoading, slug]);
+
+  if (isLoading) {
+    return <div>Loading projects...</div>;
+  }
+
+  if (!project) {
+    return <div>None</div>;
+  }
+
   return (
     <div className="max-w-[60ch] m-auto">
       <Link
-        href={repoUrl}
+        href={project.repoUrl}
         className="inline-flex items-center text-gray-400 hover:opacity-80 transition-opacity font-code border border-gray-400 rounded-xl w-fit p-0.5 pl-1.5 pr-1.5 text-sm mb-5 -ml-0.5"
       >
         <GitBranchPlusIcon className="mr-2 w-4 h-4"></GitBranchPlusIcon>
@@ -60,11 +65,21 @@ export default async function ProjectPage({
       <div className={styles.markdownBody}>
         <ReactMarkdown
           components={MarkdownComponents}
-          urlTransform={(url) => (url.startsWith("http") ? url : `/${user}/${repo}/${url}`)}
+          urlTransform={(url) =>
+            url.startsWith("http") ? url : `${project.readmeBaseUrl}/${url}`
+          }
         >
-          {markdownContent}
+          {project.readmeContent}
         </ReactMarkdown>
       </div>
     </div>
+  );
+}
+
+export default function ProjectPage() {
+  return (
+    <Suspense>
+      <ProjectMarkdown />
+    </Suspense>
   );
 }

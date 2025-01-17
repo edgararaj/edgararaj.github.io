@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/header";
 import "./globals.css";
 import "../fonts/stylesheet.css";
+import Providers from "providers/providers";
 
 export const metadata: Metadata = {
   title: "Edgar Araújo - Personal Blog",
@@ -15,12 +16,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en dark">
-      <body className="bg-dark-primary text-white min-h-screen">
-        <>
+      <Providers>
+        <body className="bg-dark-primary text-white min-h-screen">
           <Header />
           <main className="max-w-6xl mx-auto px-6 py-12">{children}</main>
-        </>
-      </body>
+        </body>
+      </Providers>
     </html>
   );
 }

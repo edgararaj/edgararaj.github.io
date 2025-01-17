@@ -5,7 +5,7 @@ import { ArrowRight, GitBranchPlusIcon } from "lucide-react";
 interface BlogCardProps {
   slug: string;
   title: string;
-  snippet: string;
+  text: string;
   imageUrl: string;
   repoUrl: string;
   index: number;
@@ -14,7 +14,7 @@ interface BlogCardProps {
 export function BlogCard({
   slug,
   title,
-  snippet,
+  text,
   imageUrl,
   repoUrl,
   index,
@@ -25,7 +25,7 @@ export function BlogCard({
         <p className="font-cube text-xs m-auto">{index + 1}</p>
         <div className="flex flex-col">
           <h2 className="text-2xl font-secondary">{title}</h2>
-          <p className="text-gray-400">{snippet}</p>
+          <p className="text-gray-400">{text}</p>
         </div>
         <Link
           href={repoUrl}
@@ -35,7 +35,7 @@ export function BlogCard({
           Github
         </Link>
         <Link
-          href={`/project/${slug}`}
+          href={`/project?${new URLSearchParams({slug})}`}
           className="inline-flex items-center text-primary hover:opacity-80 transition-opacity font-code col-start-2 mt-5"
         >
           READ MORE
