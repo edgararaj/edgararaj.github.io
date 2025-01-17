@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+@layer components {
+  .nav-link {
+    @apply relative;
+  }
+
+  .nav-link.active::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 w-full h-[1.5px] bg-primary;
+  }
+}
+
