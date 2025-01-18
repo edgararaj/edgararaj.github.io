@@ -35,8 +35,11 @@ export function BlogCard({
           Github
         </Link>
         <Link
-          href={`/project?${new URLSearchParams({ slug })}`}
-          className='inline-flex items-center text-primary hover:opacity-80 transition-opacity font-code col-start-3 sm:col-start-2 self-center mt-0 sm:mt-5 text-sm sm:text-base'
+          href={{
+            pathname: '/project',
+            query: { slug },
+          }}
+          className='inline-flex items-center text-primary hover:opacity-80 transition-opacity font-code col-start-3 sm:col-start-2 self-center mt-0 mr-4 sm:mt-5 sm:mr-0 text-sm sm:text-base'
         >
           READ MORE
           <ArrowRight className='ml-2 w-3 h-3 sm:w-4 sm:h-4' />
@@ -47,7 +50,7 @@ export function BlogCard({
         alt=''
         width={300}
         height={200}
-        className='rounded-lg object-cover w-full sm:w-[300px] sm:h-[200px]'
+        className='rounded-lg object-cover w-full h-[200px] sm:w-[300px] sm:max-h-[200px]'
       />
     </div>
   )

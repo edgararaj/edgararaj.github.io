@@ -7,6 +7,7 @@ import { GitBranchPlusIcon } from 'lucide-react'
 import { useProjects } from '../../providers/projects'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
+import ScrollToTop from '@/components/scroll-top'
 
 const MarkdownComponents: object = {
   p: (paragraph: { children?: boolean; node?: any }) => {
@@ -51,6 +52,7 @@ function ProjectMarkdown() {
 
   return (
     <div className='max-w-[60ch] m-auto'>
+      <ScrollToTop />
       <Link
         href={project.repoUrl}
         className='inline-flex items-center text-gray-400 hover:opacity-80 transition-opacity font-code border border-gray-400 rounded-xl w-fit p-0.5 pl-1.5 pr-1.5 text-sm mb-5 -ml-0.5'

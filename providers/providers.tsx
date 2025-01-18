@@ -40,6 +40,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   })
 
   useEffect(() => {
+    if (process.env.NODE_ENV == 'development') {
+      const hash = randomBytes(3).toString()
+      setBuster(hash)
+      console.log(`Random hash generated to force refresh: ${hash}`)
+      return
+    }
+
     calculateHashForPublicFile('/project_repos.json', (hash, error) => {
       if (error) {
         console.error('Error during hash calculation:', error)
@@ -48,10 +55,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       setBuster(hash)
       console.log(`Hash calculated for project_repos.json, value: ${hash}`)
     })
-
-    if (process.env.NODE_ENV == 'development') {
-      setBuster(randomBytes(3).toString())
-    }
   }, [])
 
   if (buster === null) {
