@@ -1,23 +1,72 @@
-"use client";
-import { ProjectsProvider } from "providers/projects";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+'use client'
+import { ProjectsProvider } from 'providers/projects'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { QueryClient } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
+import { createHash, randomBytes } from 'crypto'
+import { useEffect, useState } from 'react'
+import Skeleton from '@/components/skeleton'
+
+function calculateHashForPublicFile(
+  filePath: string,
+  onHashCalculated: (hash: string | null, error?: Error) => void,
+) {
+  fetch(filePath)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.statusText}`)
+      }
+      return response.text()
+    })
+    .then(fileContent => {
+      const hash = createHash('sha256').update(fileContent).digest('hex')
+      onHashCalculated(hash)
+    })
+    .catch(error => {
+      console.error('Error calculating hash:', error)
+      onHashCalculated(null, error)
+    })
+}
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 1000 * 60 * 60, // 1 hour
-          },
-        },
-      })
-  );
+  const [buster, setBuster] = useState(null)
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      },
+    },
+  })
+
+  useEffect(() => {
+    calculateHashForPublicFile('/project_repos.json', (hash, error) => {
+      if (error) {
+        console.error('Error during hash calculation:', error)
+        return
+      }
+      setBuster(hash)
+      console.log(`Hash calculated for project_repos.json, value: ${hash}`)
+    })
+
+    if (process.env.NODE_ENV == 'development') {
+      setBuster(randomBytes(3).toString())
+    }
+  }, [])
+
+  if (buster === null) {
+    return null
+  }
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: createAsyncStoragePersister({ storage: AsyncStorage }),
+        buster,
+      }}
+    >
       <ProjectsProvider>{children}</ProjectsProvider>
-    </QueryClientProvider>
-  );
+    </PersistQueryClientProvider>
+  )
 }
