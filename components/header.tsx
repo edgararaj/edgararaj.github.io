@@ -41,11 +41,17 @@ export function Header() {
           )}
         </button>
         <nav
-          className={`fixed inset-0 bg-dark-primary/80 flex flex-col items-center justify-center transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} sm:static sm:translate-x-0 sm:flex-row sm:bg-transparent`}
+          className={`fixed inset-0 z-40 bg-dark-primary/80 flex flex-col items-center justify-center transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} sm:static sm:translate-x-0 sm:flex-row sm:bg-transparent sm:z-auto`}
         >
           <ul className='flex flex-col sm:flex-row gap-8'>
             <HeaderButton href='/' onClick={() => setIsMenuOpen(false)}>
-              Projects
+              Programming
+            </HeaderButton>
+            <HeaderButton
+              href='/photography'
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Photography
             </HeaderButton>
             <HeaderButton href='/about' onClick={() => setIsMenuOpen(false)}>
               About

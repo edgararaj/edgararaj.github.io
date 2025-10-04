@@ -22,7 +22,9 @@ export default function AboutPage() {
           className='mx-auto rounded-full shadow-lg object-cover aspect-square'
         />
         <h1 className='mt-4 text-3xl font-primary'>Edgar Araújo</h1>
-        <p className='text-xl font-secondary text-primary'>Software Engineer</p>
+        <p className='text-xl font-secondary text-primary'>
+          Computer Scientist
+        </p>
         <p className='inline-flex items-center text-gray-400 transition-opacity font-code col-start-2 p-0.5 pl-1.5 pr-1.5 text-xs sm:text-sm'>
           <Pin className='mr-2 w-3 h-3 sm:w-4 sm:h-4'></Pin>
           Braga, Portugal

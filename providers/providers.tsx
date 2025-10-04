@@ -6,7 +6,6 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { createHash, randomBytes } from 'crypto'
 import { useEffect, useState } from 'react'
-import Skeleton from '@/components/skeleton'
 
 function calculateHashForPublicFile(
   filePath: string,
