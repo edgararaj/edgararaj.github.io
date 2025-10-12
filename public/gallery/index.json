@@ -11,14 +11,19 @@
       "image": "/gallery/photo2.jpg"
     },
     {
-      "image": "/gallery/photo3.jpg",
       "title": "Comboio",
-      "description": "Comboio"
+      "description": "Comboio",
+      "image": "/gallery/photo3.jpg"
     },
     {
-      "image": "/gallery/photo4.jpg",
       "title": "Cascata",
-      "description": "Cascata"
+      "description": "Cascata",
+      "image": "/gallery/photo4.jpg"
+    },
+    {
+      "title": "Foz de Esposende",
+      "description": "Foz de Esposende",
+      "image": "/gallery/IMG_0047.jpeg"
     }
   ]
 }
