@@ -1,0 +1,24 @@
+{
+  "photos": [
+    {
+      "title": "Praia dos Olhos de Água (Algarve)",
+      "description": "Praia dos Olhos de Água (Algarve)",
+      "image": "/gallery/photo1.jpeg"
+    },
+    {
+      "title": "Eólica",
+      "description": "Eólica",
+      "image": "/gallery/photo2.jpg"
+    },
+    {
+      "image": "/gallery/photo3.jpg",
+      "title": "Comboio",
+      "description": "Comboio"
+    },
+    {
+      "image": "/gallery/photo4.jpg",
+      "title": "Cascata",
+      "description": "Cascata"
+    }
+  ]
+}

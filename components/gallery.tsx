@@ -1,63 +1,35 @@
 'use client'
-import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { GalleryImage } from 'lib/gallery-api'
 import Image from 'next/image'
 import ImageModal from './image-modal'
-import { GalleryImage, findGalleryImage } from 'lib/gallery-api'
 
 export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null,
   )
-
   const isMounted = useRef(true)
 
   useEffect(() => {
     const abortController = new AbortController()
     isMounted.current = true
-    const batchSize = 4
 
     const loadImages = async () => {
-      const found: GalleryImage[] = []
-      let index = 1
-      let stop = false
-
       try {
-        while (!stop && isMounted.current && !abortController.signal.aborted) {
-          const indices = Array.from({ length: batchSize }, (_, i) => index + i)
+        const index = await fetch('/gallery/index.json').then(r => r.json())
 
-          const batchResults = await Promise.all(
-            indices.map(i =>
-              findGalleryImage(i)
-                .then(res => res)
-                .catch(err => {
-                  console.error(`Error loading image ${i}:`, err)
-                  return null
-                }),
-            ),
-          )
+        const parsed = index.photos.map((a: any) => ({
+          src: a.image,
+          alt: a.title || 'Gallery image',
+        }))
 
-          let newImagesFound = false
-
-          for (let i = 0; i < batchResults.length; i++) {
-            const res = batchResults[i]
-            if (res) {
-              found.push({ src: res, alt: `Gallery Image ${index + i}` })
-              newImagesFound = true
-            } else {
-              stop = true
-              break
-            }
-          }
-
-          if (isMounted.current && newImagesFound) {
-            setImages([...found])
-          }
-
-          index += batchSize
+        if (isMounted.current && !abortController.signal.aborted) {
+          setImages(parsed)
         }
       } catch (err) {
-        console.error('Unexpected error while loading images:', err)
+        console.error('Failed to load gallery index:', err)
       }
     }
 
@@ -69,13 +41,8 @@ export default function Gallery() {
     }
   }, [])
 
-  const handleOpen = (index: number) => {
-    setSelectedImageIndex(index)
-  }
-
-  const handleClose = useCallback(() => {
-    setSelectedImageIndex(null)
-  }, [])
+  const handleOpen = (index: number) => setSelectedImageIndex(index)
+  const handleClose = useCallback(() => setSelectedImageIndex(null), [])
 
   if (images.length === 0) {
     return (

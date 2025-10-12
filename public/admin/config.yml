@@ -1,0 +1,30 @@
+local_backend: true
+
+backend:
+  name: github
+  repo: edgararaj/edgararaj.github.io
+  branch: main
+
+site_url: https://edgararaj.github.io
+
+publish_mode: editorial_workflow
+media_folder: public/gallery
+public_folder: /gallery
+
+collections:
+  - label: "Pages"
+    name: "pages"
+    files:
+    - label: "Gallery"
+      name: "gallery"
+      file: "public/gallery/index.json"
+      format: "json"
+      fields:
+        - label: Photos
+          label_singular: 'Photo'
+          name: photos
+          widget: list
+          fields:
+            - { label: "Title", name: "title", widget: "string" }
+            - { label: "Description", name: "description", widget: "text" }
+            - { label: "Image", name: "image", widget: "image" }
