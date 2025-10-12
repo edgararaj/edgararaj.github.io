@@ -1,33 +1,26 @@
+const EXTENSIONS = ['png', 'jpg', 'jpeg']
+
 export interface GalleryImage {
-  id: number
   src: string
   alt: string
 }
 
-const supportedExtensions = ['.png', '.jpg', '.jpeg']
-
-async function checkImageExists(imagePath: string): Promise<boolean> {
+const headExists = async (url: string) => {
   try {
-    const response = await fetch(imagePath, { method: 'HEAD' })
-    return response.ok
+    const res = await fetch(url, { method: 'HEAD' })
+    return res.ok
   } catch {
     return false
   }
 }
 
-export async function loadGalleryImage(
-  photoNumber: number,
-): Promise<GalleryImage | null> {
-  for (const ext of supportedExtensions) {
-    const imagePath = `/gallery/photo${photoNumber}${ext}`
-    const exists = await checkImageExists(imagePath)
-    if (exists) {
-      return {
-        id: photoNumber,
-        src: imagePath,
-        alt: `Gallery Image ${photoNumber}`,
-      }
-    }
-  }
-  return null
+export const findGalleryImage = async (index: number) => {
+  // check all extensions in parallel for a single index, return first existing path or null
+  const checks = EXTENSIONS.map(ext =>
+    headExists(`/gallery/photo${index}.${ext}`).then(exists =>
+      exists ? `/gallery/photo${index}.${ext}` : null,
+    ),
+  )
+  const results = await Promise.all(checks)
+  return results.find(r => r !== null) ?? null
 }
