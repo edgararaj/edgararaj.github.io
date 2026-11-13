@@ -1,9 +1,8 @@
 'use client'
 import { ProjectsProvider } from 'providers/projects'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { createHash, randomBytes } from 'crypto'
 import { useEffect, useState } from 'react'
 
@@ -64,7 +63,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        persister: createAsyncStoragePersister({ storage: AsyncStorage }),
+        persister: createSyncStoragePersister({
+          storage: window.localStorage,
+        }),
         buster,
       }}
     >
